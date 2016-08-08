@@ -1,0 +1,49 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath group: 'org.springframework.boot', name: 'spring-boot-gradle-plugin', version: '1.4.0.RELEASE'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'spring-boot'
+
+project.version = '0.1.5'
+
+jar {
+    baseName = 'noteService'
+    version =  project.version
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web'
+    compile group: 'org.springframework.boot', name: 'spring-boot-devtools'
+    compile group: 'joda-time', name: 'joda-time', version: '2.3'
+}
+
+springBoot {
+    mainClass = "com.company.nsrv.Application"
+}
+
+task createRuntimeConfiguration << {
+    new File("$projectDir/src/main/resources/version.properties").withWriter { w ->
+        Properties prop = new Properties()
+        prop['version'] = project.version.toString()
+        prop['timestamp'] = (new Date()).toString()
+        prop.store(w, null)
+    }
+}
+
+build.dependsOn(createRuntimeConfiguration)
+
+
